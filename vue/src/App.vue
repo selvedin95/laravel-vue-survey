@@ -7,7 +7,7 @@ export default {
     HelloWorld
   },
   computed: {
-  ...mapState(['user.data.name'])
+  ...mapState(['user'])
 
   }
 }
@@ -15,7 +15,8 @@ export default {
 </script>
 
 <template>
-  <pre>{{ user }}</pre>
+  <h1>Test:</h1>
+  <pre>{{ user.data.name }}</pre>
   <div>
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
