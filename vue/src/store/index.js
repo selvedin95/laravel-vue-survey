@@ -1,12 +1,7 @@
-import { createStore } from "vuex";
+import { createStore } from "vuex/dist/vuex";
 
 const store = createStore({
-    state: {
-        user: {
-            data: {name: 'Selvedin'},
-            token: null
-        }
-    },
+    state: {},
     getters: {},
     actions: {},
     mutations: {},
