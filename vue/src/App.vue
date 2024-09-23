@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div>
       <router-view /> <!-- Prikaz aktivne komponente na osnovu rute -->
     </div>
   </template>
