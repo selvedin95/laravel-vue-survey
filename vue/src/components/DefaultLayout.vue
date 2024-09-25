@@ -118,7 +118,7 @@
 
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { MenuIcon, XIcon, LockClosedIcon } from '@heroicons/vue/outline';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
