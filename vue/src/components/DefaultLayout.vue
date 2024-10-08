@@ -66,13 +66,8 @@
               class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
               <span class="sr-only">Open main menu</span>
-<<<<<<< HEAD
               <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
               <XIcon v-else class="block h-6 w-6" aria-hidden="true" />
-=======
-              <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
-              <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
->>>>>>> 0345cac4f13aea563d77c5a581e1b98fa981b689
             </DisclosureButton>
           </div>
         </div>
@@ -124,6 +119,7 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { MenuIcon, XIcon, LockClosedIcon } from '@heroicons/vue/outline';
+// import { LockClosedIcon } from '@heroicons/vue/solid';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
@@ -132,10 +128,12 @@ const router = useRouter();
 const store = useStore();
 
 function logout() {
-  store.commit('logout');
-  router.push({
+  store.dispatch('logout')
+  .then(() => {
+    router.push({
     name: 'Login'
-  })
+    });
+  });
 }
 
 // User data from Vuex store

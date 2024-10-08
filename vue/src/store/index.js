@@ -1,6 +1,5 @@
 import { createStore } from "vuex/dist/vuex";
-//import { createStore } from "/node_modules/.vite/deps/vuex_dist_vuex.js?v=5137f9be";
-
+import axiosClient from "../axios";
 
 const store = createStore({
     state: { 
@@ -11,35 +10,56 @@ const store = createStore({
     },
     getters: {},
     actions: {
-        register({commit}, user) {
-            return fetch(`http://localhost:8000/api/register`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                method: "POST",
-                body: JSON.stringify(user),
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                commit("setUser", res);
-                return res;
-            });
+        register({ commit }, user) {
+            const userData = {
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                password_confirmation: user.password_confirmation,
+            };
+
+            return axiosClient.post('/register', userData)
+                .then((response) => {
+                    commit('setUser', response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error("Greška prilikom registracije:", error.response.data);
+                    throw error;
+                });
         },
+        login({ commit }, user) {
+            return axiosClient.post('/login', user)
+                .then((response) => {
+                    commit('setUser', response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error("Greška prilikom prijave:", error.response.data);
+                    throw error;
+                });
+        },
+        logout({commit}) {
+            return axiosClient.post('/logout')
+            .then((response) => {
+                commit('logout')
+                return response;
+            })
+        }
     },
     mutations: {
         logout: (state) => {
             state.user.token = null;
             state.user.data = {};
-            
+            sessionStorage.removeItem('TOKEN');
         },
         setUser: (state, userData) => {
             state.user.token = userData.token;
             state.user.data = userData.user;
             sessionStorage.setItem('TOKEN', userData.token);
+            // console.log("User data set in Vuex:", userData); // Provjerite šta se čuva
         }    
     },
-    
     modules: {}
 });
 

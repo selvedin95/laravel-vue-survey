@@ -51,7 +51,7 @@
   </template>
   
   <script setup>
-  import { LockClosedIcon } from '@heroicons/vue/outline';
+  import { LockClosedIcon } from '@heroicons/vue/solid';
   import store from '../store';
   import { useRouter } from 'vue-router';
   
