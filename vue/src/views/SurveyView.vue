@@ -3,11 +3,12 @@
         <template v-slot:header>
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-900">
-                    {{ model.id ? model.title : "Create a Survey" }}
+                    {{ route.params.id ? model.title : "Create a Survey" }}
                 </h1>
             </div>
         </template>
-        <form @submit.prevent="saveSurvey">
+        <div v-if="surveyLoading" class="flex justify-center">Loading...</div>
+        <form v-else @submit.prevent="saveSurvey">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <!-- Survey Fields-->
                 <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -152,7 +153,7 @@
                         </button>
                         <!--/ Add new question-->
                     </h3>
-                    <div v-if="!model.questions.length" class="text-center text-gray-600">
+                    <div v-if="!model.questions || !model.questions.length" class="text-center text-gray-600">
                         You don't have any questions created!
                     </div>
                     <div v-for="(question, index) in model.questions" :key="question.id">
@@ -182,7 +183,7 @@
 <script setup>
 import { v4 as uuidv4} from "uuid";
 import store from "../store";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import PageComponent from "../components/PageComponent.vue";
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
@@ -191,20 +192,33 @@ const router = useRouter();
 
 const route = useRoute();
 
+const surveyLoading = computed(() => store.state.currentSurvey.loading)
+
 // create empty survey
 let model = ref({
+    id: null,
     title: "",
     status: false,
     description: null,
-    image: null,
+    image_url: null,
     expire_date: null,
     questions: [],
 });
 
+// Watch to current survey data change and when this happens we update local model
+watch(
+    () => store.state.currentSurvey.data,
+    (newVal, oldVal) => {
+        model.value = {
+            ...JSON.parse(JSON.stringify(newVal)),
+            status: newVal.status !== "draft",
+            questions: newVal.questions || [], // Osiguraj da je questions uvijek niz
+        };
+    }
+);
+
 if (route.params.id) {
-    model.value = store.state.surveys.find(
-        (s) => s.id === parseInt(route.params.id)
-    );
+    store.dispatch('getSurvey', route.params.id);
 }
 
 function onImageChoose(ev) {

@@ -45,6 +45,12 @@ class SurveyController extends Controller
     public function show(Survey $survey, Request $request)
     {
         $user = $request->user();
+
+        // Provjeri da li `survey` postoji
+        if (!$survey) {
+            return response()->json(['error' => 'Survey not found'], 404);
+        }
+
         if ($user->id !== $survey->user->id) {
             return abort(403, 'Unauthorized action.');
         }
@@ -58,6 +64,8 @@ class SurveyController extends Controller
     {
         $data = $request->validated();
 
+        dd($data);
+
         // Check if image was given and save on local file system
         if (isset($data['image'])) {
             $relativePath = $this->saveImage($data['image']);
@@ -65,8 +73,8 @@ class SurveyController extends Controller
 
             // If there's and old image, delete it
             if ($survey->image) {
-                $absoulutePath = public_path($survey->image);
-                File::delete($absoulutePath);
+                $absolutePath = public_path($survey->image);
+                File::delete($absolutePath);
             }
         }
 
@@ -113,10 +121,10 @@ class SurveyController extends Controller
         }
         $dir = 'images/';
         $file = Str::random() . '.' . $type;
-        $absoulutePath = public_path($dir);
+        $absolutePath = public_path($dir);
         $relativePath = $dir . $file;
-        if (!File::exists($absoulutePath)) {
-            File::makeDirectory($absoulutePath, 0755, true);
+        if (!File::exists($absolutePath)) {
+            File::makeDirectory($absolutePath, 0755, true);
         }
         file_put_contents($relativePath, $image);
 
