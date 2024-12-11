@@ -36,7 +36,7 @@ class SurveyController extends Controller
 
         $survey = Survey::create($data);
 
-       return new SurveyResource($survey);
+        return new SurveyResource($survey);
     }
 
     /**
@@ -54,7 +54,7 @@ class SurveyController extends Controller
         if ($user->id !== $survey->user->id) {
             return abort(403, 'Unauthorized action.');
         }
-       return new SurveyResource($survey);
+        return new SurveyResource($survey);
     }
 
     /**
@@ -92,12 +92,21 @@ class SurveyController extends Controller
         if ($user->id !== $survey->user->id) {
             return abort(403, 'Unauthorized action.');
         }
+
         $survey->delete();
+
+        // If there's and old image, delete it
+        if ($survey->image) {
+            $absolutePath = public_path($survey->image);
+            File::delete($absolutePath);
+        }
+
         return response('', 204);
     }
 
-    private function saveImage($image) {
-    
+    private function saveImage($image)
+    {
+
         // Check if image is valid base64 string
         if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
             // Take out the base64 encoded text without mime type

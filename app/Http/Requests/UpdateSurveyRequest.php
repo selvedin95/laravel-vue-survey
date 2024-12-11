@@ -10,13 +10,14 @@ class UpdateSurveyRequest extends FormRequest
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
-    {
-        $survey = $this->route('survey');
-        if ($this->user()->id() !== $survey->user_id) {
-            return false;
-        }
-        return true;
+{
+    $survey = $this->route('survey');
+    if ($this->user()->id !== $survey->user_id) {  // Use $user()->id instead of $user()->id()
+        return false;
     }
+    return true;
+}
+
 
     /**
      * Get the validation rules that apply to the request.
